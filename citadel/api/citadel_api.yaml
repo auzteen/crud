@@ -1,25 +1,19 @@
 openapi: 3.0.3
 info:
   version: 1.0.0
-  title: "Mission Control Assets API Specification"
+  title: "Our Assets API Specification"
   description: >
-    Mission Control Assets API specification
+    Our Assets API specification
   contact:
-    name: Mission Control team
-    url: http://portal.mcx.open-systems.com
-    email: support@mcx.open-systems.com
+    name: Our team
+    url: http://portal.xxx.xxx.com
+    email: support@mxxx.com
   x-audience: component-internal
   x-api-id: a975e63e-6933-48de-a7f2-eeae5edfa551
 
 servers:
-  - url: 'https://api.alpha-rome.dev'
+  - url: 'https://api.xxx.dev'
     description: ALPHA
-  - url: 'https://api.beta-rome.dev'
-    description: BETA
-  - url: 'https://api.gamma-rome.dev'
-    description: GAMMA
-  - url: 'https://api.mcx.open-systems.com'
-    description: PROD
 
 tags:
   - name: assets
