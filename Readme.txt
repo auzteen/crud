@@ -1,3 +1,9 @@
+- work on Tartarus/app/azfunc
++ DefenderScore.cs
++ VulnerabilityDiscovery.cs
+
+
+
 Tartarus - Get Defender Vulnerabilities
 ########################################
 1. Get Defender Vulnerability and Defender machine assets ( GET https://api.securitycenter.microsoft.com/api/machines )
@@ -7,7 +13,8 @@ Note: Vulnerability.machineId = Asset.id (SourceId)
 
 Data Model
 ############
--- Similar to Citadel DefenderAssests...
+-- Similar to Citadel DefenderAssests on Citadel/app/azfunc..
+* Model/DefenderHost.cs, Service/AssetService, Interface/IAssetService.cs, Constants.cs, AssetDefender.cs
 
 https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/get-all-vulnerabilities-by-machines?view=o365-worldwide
 
