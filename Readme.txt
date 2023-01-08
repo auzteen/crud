@@ -7,6 +7,7 @@ Tartarus - Get Defender Vulnerabilities
 ########################################
 1. Get Defender Vulnerability and Defender machine assets ( GET https://api.securitycenter.microsoft.com/api/machines )
 2. Map Defender machine id (SourceId) and AssetName to Defender Vulnerability machineId JSON model: SourceId
+3. Do Post request
 
 Note: Vulnerability.machineId = Asset.id (SourceId)
 
