@@ -27,8 +27,8 @@ namespace Citadel
     public class CitadelAssetDefender
     {
         private static HttpClient httpClient = new HttpClient();
-        private static string GET_URL = "https://api-us.securitycenter.microsoft.com/api/machines"; // Change these uri for GET //86842942-00cd-4d85-b907-152dbd277a88.mock.pstmn.io
-        private static string POST_URL = "https://fa-cita-sbx-cac-01.azurewebsites.net/v1/customers/open/assets/"; // Change these uri for PUT //fa-cita-sbx-cac-01.azurewebsites.net/v1/customers/open/assets/
+        private static string GET_URL = "https://api-eu.securitycenter.microsoft.com/api/machines";
+        private static string PUT_URL = "https://xxxxxxx.azurewebsites.net/v1/customers/open/assets/";
 
         private readonly ILogger<CitadelAssetDefender> _logger;
         private readonly IAssetService _asset;
@@ -73,9 +73,11 @@ namespace Citadel
                     });
 
                     // Put data
+                    $jwt_token = "xxxxxxxxxxxxx";
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", $jwt_token);
                     var httpContent = new StringContent(jsonObject, System.Text.Encoding.UTF8, "application/json"); // Create HttpPost content as type of json and enable UTF-8 Content
                     httpContent.Headers.Add("X-Company-Short", "open"); // Add Headers
-                    var respMessage = await httpClient.PutAsync(POST_URL, httpContent); // PUT Request
+                    var respMessage = await httpClient.PutAsync(PUT_URL, httpContent); // PUT Request
                     var postResp = await respMessage.Content.ReadAsStringAsync(); // Read content as string 
                     _logger.LogInformation($"C# Timer trigger PUT function executed at: {DateTime.Now}{postResp}"); // Print to screen
                     //_logger.LogInformation($"json: {jsonObject}");
