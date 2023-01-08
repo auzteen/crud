@@ -755,7 +755,7 @@ namespace Citadel.Services
                         Manufacturer = "",
                         OS = data.osPlatform,
                         Comment = "",
-                        SourceId = data.SourceId,
+                        SourceId = data.id,
                         AssetCriticality = new DefenderCriticality
                         {
                             Status = data.exposureLevel,
