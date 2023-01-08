@@ -1,8 +1,8 @@
 ﻿#Get Bearer token
 ##################
-$tenantId = '584059b8-96b7-4f25-aff3-aad0264a1d51' # Paste your own tenant ID here
-$appId = '8e4fcfa6-90fc-4d2b-9036-a11e859abf16' # Paste your own app ID here
-$appSecr = 'Iw~8Q~tYZRULT8VdVf6Q3NCNXcwtwkVIKWD0Cce.' # Paste your own app secret here
+$tenantId = 'xxxxxxx' # Paste your own tenant ID here
+$appId = 'xxxxxxx' # Paste your own app ID here
+$appSecr = 'xxxxxxxx' # Paste your own app secret here
 
 $resourceAppIdUri = 'https://api.securitycenter.microsoft.com'
 $oAuthUri = "https://login.microsoftonline.com/$TenantId/oauth2/token"
@@ -18,7 +18,7 @@ $aadToken
 
 #Get latest machines
 ####################
-$alertUrl = "https://api-us.securitycenter.microsoft.com/api/machines"
+$alertUrl = "https://api-eu.securitycenter.microsoft.com/api/machines"
 $headers = @{
     'Content-Type' = 'application/json'
     Accept = 'application/json'
@@ -33,11 +33,9 @@ $machines
 #################
 Foreach($machine in $machines)
 {
-    #echo $machine.id $machine.computerDnsName    $machine.lastIpAddress $machine.exposureLevel
     $AssetName = $machine.computerDnsName
     $IpAddress = $machine.lastIpAddress
-	$Status = $machine.exposureLevel
-
+    $Status = $machine.exposureLevel
 #json
 ########
 $jsonBase = @{}
@@ -51,14 +49,15 @@ $jbody
 
 }
 
-#Post Assets
+#PUT Assets
 #############
+$jwt_token = 'xxxxx'
 $headers = @{
     'Content-Type' = 'application/json'
     Accept = 'application/json'
-    Authorization = "Bearer $aadToken"
-	'X-Company-Short' = "open"
+    Authorization = "Bearer $jwt_token"
+    'X-Company-Short' = "test"
 }
-$queryUrl = "https://fa-cita-sbx-cac-01.azurewebsites.net/v1/customers/open/assets/"
+$queryUrl = "https://xxxxxxx.azurewebsites.net/v1/customers/test/assets/"
 $queryResponse = Invoke-WebRequest -Method Put -Uri $queryUrl -Headers $headers -Body $jbody -ErrorAction Stop
 $queryResponse
