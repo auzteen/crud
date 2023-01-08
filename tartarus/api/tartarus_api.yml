@@ -1,0 +1,950 @@
+openapi: 3.0.3
+info:
+  version: 1.0.0
+  title: "Mission Control Assets API Specification"
+  description: >
+    Mission Control Assets API specification
+  contact:
+    name: Mission Control team
+    url: http://portal.mcx.open-systems.com
+    email: support@mcx.open-systems.com
+  x-audience: component-internal
+  x-api-id: a975e63e-6933-48de-a7f2-eeae5edfa551
+
+servers:
+  - url: 'https://api.alpha-rome.dev'
+    description: ALPHA
+  - url: 'https://api.beta-rome.dev'
+    description: BETA
+  - url: 'https://api.gamma-rome.dev'
+    description: GAMMA
+  - url: 'https://api.mcx.open-systems.com'
+    description: PROD
+
+paths:
+  /v1/customers/{id}/vulnerabilities:
+    get:
+      tags:
+      - Vulnerabilities
+      summary: Get vulnerability information
+      operationId: get-vulnerability-id
+      description: >
+        Get the vulnerability information for a given customer for a given scan.
+        The infomation comes from a nightly scan of (for now) the MDE API.
+        Status information for vulnerabilities can be one of: Pending, In-Mitigation.
+        If we are in mitigation this record is will be duplicated there.
+      security:
+        - BearerAuth: [ mdr.assets.read ]
+      parameters:
+        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/sort'
+        - $ref: '#/components/parameters/page_limit'
+        - $ref: '#/components/parameters/page_offset'
+        - $ref: '#/components/parameters/filter'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/VulnerabilityListDataMessage'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '500':
+          $ref: '#/components/responses/500'
+
+    post:
+      tags:
+        - Vulnerabilities
+      operationId: post-customers-id-vulnerabilities
+      parameters:
+        - $ref: '#/components/parameters/id'
+      summary: Create customer vulnerabilities
+      description: >
+       Create customer vulnerabilities
+      security:
+        - BearerAuth: [ mdr.assets.write ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VulnerabilityDataMessage'
+      responses:
+        '200':
+          description: Valid requerst - No changes made
+          #content:
+            #application/vnd.api+json:
+              #schema:
+                #$ref: '#/components/schemas/AssetOkResponseMessage'
+
+        '202':
+          description: Request accepted - List of asset changes by id/field
+          #content:
+            #text/plain:
+              #schema:
+                #$ref: '#/components/schemas/AssetAcceptedResponseMessage'
+
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '500':
+          $ref: '#/components/responses/500'
+
+    patch:
+      tags:
+        - Vulnerabilities
+      operationId: update-customers-id-vulnerabilities
+      parameters:
+        - $ref: '#/components/parameters/id'
+      summary: Update customer asset vulnerability status
+      description: >
+       Update customer vulnerabilities.
+       The only updatable field is the status field.  All else is static as defined by the source scanner.
+       This field canbe one of: Pending, In-Mitigation
+      security:
+        - BearerAuth: [ mdr.assets.write ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VulnerabilityUpdateMessage'
+      responses:
+        '200':
+          description: Valid requerst - No changes made
+          #content:
+            #application/vnd.api+json:
+              #schema:
+                #$ref: '#/components/schemas/AssetOkResponseMessage'
+
+        '202':
+          description: Request accepted - List of asset changes by id/field
+          #content:
+            #text/plain:
+              #schema:
+                #$ref: '#/components/schemas/AssetAcceptedResponseMessage'
+
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '500':
+          $ref: '#/components/responses/500'
+
+  /v1/customers/{id}/mitigations:
+    get:
+      tags:
+      - Mitigations
+      summary: Get vulnerability information
+      operationId: get-mitigation-id
+      description: >
+        Upon 'Vulnerability' status change to 'In-Mitigation,' this table includes a permanent copy of the vulnerability currently being mitigated.
+        When the record is duplicated in this table its status in this table is set to pending.
+        The status field in this table can be one of the following values: Pending, In-Progress, On-Hold, Completed.
+        Records older than30 days in this table are archived in the 'MitigationArchive' table in the Assets DB
+      security:
+        - BearerAuth: [ mdr.assets.read ]
+      parameters:
+        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/sort'
+        - $ref: '#/components/parameters/page_limit'
+        - $ref: '#/components/parameters/page_offset'
+        - $ref: '#/components/parameters/filter'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/MitigationListDataMessage'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '500':
+          $ref: '#/components/responses/500'
+
+    post:
+      tags:
+        - Mitigations
+      operationId: post-customers-id-mitigations
+      parameters:
+        - $ref: '#/components/parameters/id'
+      summary: Create customer mitigations
+      description: >
+       Create customer mitigations
+      security:
+        - BearerAuth: [ mdr.assets.write ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MitigationDataMessage'
+      responses:
+        '200':
+          description: Valid requerst - No changes made
+          #content:
+            #application/vnd.api+json:
+              #schema:
+                #$ref: '#/components/schemas/AssetOkResponseMessage'
+
+        '202':
+          description: Request accepted - List of asset changes by id/field
+          #content:
+            #text/plain:
+              #schema:
+                #$ref: '#/components/schemas/AssetAcceptedResponseMessage'
+
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '500':
+          $ref: '#/components/responses/500'
+
+    patch:
+      tags:
+        - Mitigations
+      operationId: patch-customers-id-mitigations
+      parameters:
+        - $ref: '#/components/parameters/id'
+      summary: Update customer mitigation status and/or activity
+      description: >
+       Update customer vulnerability mitigation status.
+       The only updatable fields are the status and action fields.  All else is static as defined by the vulnerability table.
+       Can be one of: Pending, In-Progress, On-Hold, Completed
+      security:
+        - BearerAuth: [ mdr.assets.write ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MitigationUpdateMessage'
+      responses:
+        '200':
+          description: Valid requerst - No changes made
+          #content:
+            #application/vnd.api+json:
+              #schema:
+                #$ref: '#/components/schemas/AssetOkResponseMessage'
+
+        '202':
+          description: Request accepted - List of asset changes by id/field
+          #content:
+            #text/plain:
+              #schema:
+                #$ref: '#/components/schemas/AssetAcceptedResponseMessage'
+
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '500':
+          $ref: '#/components/responses/500'
+
+  /v1/customers/{id}/mitigations/archives:
+    get:
+      tags:
+      - Mitigation Archives
+      summary: Get customer aggregate asset mitigation history
+      operationId: get-mitigation-archive-id
+      description: >
+        History table of mitigations
+      security:
+        - BearerAuth: [ mdr.assets.read ]
+      parameters:
+        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/sort'
+        - $ref: '#/components/parameters/page_limit'
+        - $ref: '#/components/parameters/page_offset'
+        - $ref: '#/components/parameters/filter'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/MitigationArchiveListDataMessage'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+        '500':
+          $ref: '#/components/responses/500'
+
+components:
+  headers:
+    Retry-After:
+      schema:
+        type: integer
+      description: Delay retry for given seconds.
+    X-RateLimit-Limit:
+      schema:
+        type: integer
+      description: Request limit per hour.
+    X-RateLimit-Remaining:
+      schema:
+        type: integer
+      description: The number of requests left for the time window.
+    X-RateLimit-Reset:
+      schema:
+        type: string
+        format: date-time
+      description: The UTC date/time at which the current rate limit window resets.
+
+  parameters:
+    sort:
+      name: sort
+      in: query
+      description: "[fields to sort by](https://jsonapi.org/format/#fetching-sorting)"
+      required: false
+      style: form
+      schema:
+        type: string
+    page_size:
+      name: "page[size]"
+      in: query
+      description: size of page for paginated results
+      required: false
+      schema:
+        type: integer
+        format: int32
+    page_number:
+      name: "page[number]"
+      in: query
+      description: page number of results
+      required: false
+      schema:
+        type: integer
+        format: int32
+    page_limit:
+      name: "page[limit]"
+      in: query
+      description: limit for this page of paginated results
+      required: false
+      schema:
+        type: integer
+        format: int32
+    page_offset:
+      name: "page[offset]"
+      in: query
+      description: page offset value
+      required: false
+      schema:
+        type: integer
+        format: int32
+    fields:
+      name: fields
+      in: query
+      description: "sparse fieldsets: `fields[TYPE]=field1,field2,...`"
+      required: false
+      style: deepObject
+      schema:
+        type: string
+    filter:
+      name: filter
+      in: query
+      description: |-
+        OR condition: filter=active=true^ORactive=false
+        AND condition: priority=2^verdict=true_positive
+      required: false
+      style: deepObject
+      schema:
+        type: string
+    id:
+      name: id
+      in: path
+      description: The short name for the organization
+      required: true
+      style: simple
+      schema:
+        type: string
+    x-company-short:
+      name: X-Company-Short
+      in: header
+      description: The short name of the company
+      required: false
+      schema:
+        type: string
+
+  responses:
+    '400':
+      description: Bad Request
+      content:
+        'application/json':
+          schema:
+            $ref: '#/components/schemas/error'
+    '401':
+      description: Unauthorized
+      content:
+        'application/json':
+          schema:
+            $ref: '#/components/schemas/error'
+    '403':
+      description: Forbidden
+      content:
+        'application/problem+json':
+          schema:
+            $ref: '#/components/schemas/error'
+    '404':
+      description: Not Found
+      content:
+        'application/json':
+          schema:
+            $ref: '#/components/schemas/error'
+    '409':
+      description: Conflict
+      content:
+        'application/json':
+          schema:
+            $ref: '#/components/schemas/error'
+    '415':
+      description: Unsupported Media Type
+      content:
+        'application/json':
+          schema:
+            $ref: '#/components/schemas/error'
+    '429':
+      description: Too Many Requests
+      headers:
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/X-RateLimit-Limit'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/X-RateLimit-Remaining'
+        X-RateLimit-Reset:
+          $ref: '#/components/headers/X-RateLimit-Reset'
+        Retry-After:
+          $ref: '#/components/headers/Retry-After'
+      content:
+        'application/json':
+          schema:
+            $ref: '#/components/schemas/error'
+    '500':
+      description: Internal Server Error
+      content:
+        'application/json':
+          schema:
+            $ref: '#/components/schemas/error'
+
+  schemas:
+    VolunerabilityAcceptedResponseMessage:
+      type: object
+      properties:
+        meta:
+          type: object
+          properties:
+            result:
+              type: array
+              items:
+                allOf:
+                  - type: object
+                    properties:
+                      totalAssetCount:
+                        type: string
+                      addedAssetCount:
+                        type: string
+                      updatedAssetCount:
+                        type: string
+                      assetType:
+                        type: string
+                      updatedAssets:
+                        type: array
+                        items:
+                          allOf:
+                            - type: object
+                              properties:
+                                Database Asset Id:
+                                  type: array
+                                  items:
+                                      properties:
+                                        Field that changed 1:
+                                          type: string
+                                        Field that changed 2:
+                                          type: string
+                                        Etcetera:
+                                          type: string
+
+    MitigationListDataMessage:
+      type: object
+      properties:
+        meta:
+          type: object
+          properties:
+            result:
+              $ref: "#/components/schemas/jsonApiMeta"
+        links:
+          $ref: "#/components/schemas/jsonApiPagination"
+        jsonapi:
+          $ref: "#/components/schemas/jsonApi"
+        data:
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/jsonApiResource'
+              - type: object
+                properties:
+                  type:
+                    type: string
+                    enum: ['Mitigations']
+                  attributes:
+                    $ref: '#/components/schemas/MitigationGetData'
+
+    MitigationArchiveListDataMessage:
+      type: object
+      properties:
+        meta:
+          type: object
+          properties:
+            result:
+              $ref: "#/components/schemas/jsonApiMeta"
+        links:
+          $ref: "#/components/schemas/jsonApiPagination"
+        jsonapi:
+          $ref: "#/components/schemas/jsonApi"
+        data:
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/jsonApiResource'
+              - type: object
+                properties:
+                  type:
+                    type: string
+                    enum: ['Mitigations']
+                  attributes:
+                    $ref: '#/components/schemas/MitigationArchiveData'
+
+    VulnerabilityListDataMessage:
+      type: object
+      properties:
+        meta:
+          type: object
+          properties:
+            result:
+              $ref: "#/components/schemas/jsonApiMeta"
+        links:
+          $ref: "#/components/schemas/jsonApiPagination"
+        jsonapi:
+          $ref: "#/components/schemas/jsonApi"
+        data:
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/jsonApiResource'
+              - type: object
+                properties:
+                  type:
+                    type: string
+                    enum: ['Vulnerabilities']
+                  attributes:
+                    $ref: '#/components/schemas/VulnerabilityGetData'
+
+    VulnerabilityDataMessage:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            allOf:
+              - type: object
+                properties:
+                  type:
+                    type: string
+                    enum: ['Vulnerabilities']
+                  attributes:
+                    $ref: '#/components/schemas/VulnerabilityPostData'
+
+    VulnerabilityUpdateMessage:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            allOf:
+              - type: object
+                properties:
+                  type:
+                    type: string
+                    enum: ['Vulnerabilities']
+                  attributes:
+                    $ref: '#/components/schemas/VulnerabilityUpdateData'
+
+    MitigationDataMessage:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            allOf:
+              - type: object
+                properties:
+                  type:
+                    type: string
+                    enum: ['Vulnerabilities']
+                  attributes:
+                    $ref: '#/components/schemas/MitigationPostData'
+
+    MitigationUpdateMessage:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            allOf:
+              - type: object
+                properties:
+                  type:
+                    type: string
+                    enum: ['Mitigations']
+                  attributes:
+                    $ref: '#/components/schemas/MitigationUpdateData'
+
+    VulnerabilityGetData:
+      type: object
+      properties:
+        VID:
+          type: string
+        Status:
+          description: Can be one of - Pending, In-Mitigation
+          type: string
+        AssetName:
+          type: string
+        AssetType:
+          type: string
+        CompanyShortName:
+          type: string
+        Source:
+          type: string
+        SourceId:
+          type: string
+        OS:
+          type: string
+        VenderName:
+          type: string
+        VenderReference:
+          type: string
+        ProductName:
+          type: string
+        ProductVersion:
+          type: string
+        CVEID:
+          type: string
+        IPAddress:
+          type: string
+        FQDN:
+          type: string
+        Severity:
+          type: string
+
+    VulnerabilityPostData:
+      type: object
+      properties:
+        AssetName:
+          type: string
+        AssetType:
+          type: string
+        CompanyShortName:
+          type: string
+        Source:
+          type: string
+        SourceId:
+          type: string
+        OS:
+          type: string
+        VenderName:
+          type: string
+        VenderReference:
+          type: string
+        ProductName:
+          type: string
+        ProductVersion:
+          type: string
+        CVEID:
+          type: string
+        IPAddress:
+          type: string
+        FQDN:
+          type: string
+        Severity:
+          type: string
+
+    VulnerabilityUpdateData:
+      type: object
+      properties:
+        VID:
+          type: string
+        Status:
+          description: Can be one of - Pending, In-Mitigation
+          type: string
+
+    MitigationGetData:
+      type: object
+      properties:
+        MID:
+          type: string
+        Status:
+          description: Can be one of - Pending, In-Progress, On-Hold, Completed
+          type: string
+        Actions:
+          type: string
+        AssetName:
+          type: string
+        AssetType:
+          type: string
+        CompanyShortName:
+          type: string
+        Source:
+          type: string
+        SourceId:
+          type: string
+        OS:
+          type: string
+        VenderName:
+          type: string
+        VenderReference:
+          type: string
+        ProductName:
+          type: string
+        ProductVersion:
+          type: string
+        CVEID:
+          type: string
+        IPAddress:
+          type: string
+        FQDN:
+          type: string
+        Severity:
+          type: string
+
+    MitigationPostData:
+      type: object
+      properties:
+        AssetName:
+          type: string
+        AssetType:
+          type: string
+        CompanyShortName:
+          type: string
+        Source:
+          type: string
+        SourceId:
+          type: string
+        OS:
+          type: string
+        VenderName:
+          type: string
+        VenderReference:
+          type: string
+        ProductName:
+          type: string
+        ProductVersion:
+          type: string
+        CVEID:
+          type: string
+        IPAddress:
+          type: string
+        FQDN:
+          type: string
+        Severity:
+          type: string
+
+    MitigationArchiveData:
+      type: object
+      properties:
+        MAID:
+          type: string
+        Status:
+          description: Can be one of - Pending, In-Progress, On-Hold, Completed
+          type: string
+        Actions:
+          type: string
+        AssetName:
+          type: string
+        AssetType:
+          type: string
+        CompanyShortName:
+          type: string
+        Source:
+          type: string
+        SourceId:
+          type: string
+        OS:
+          type: string
+        VenderName:
+          type: string
+        VenderReference:
+          type: string
+        ProductName:
+          type: string
+        ProductVersion:
+          type: string
+        CVEID:
+          type: string
+        IPAddress:
+          type: string
+        FQDN:
+          type: string
+        Severity:
+          type: string
+
+    MitigationUpdateData:
+      type: object
+      properties:
+        MID:
+          type: string
+        Status:
+          description: Can be one of - Pending, In-Progress, On-Hold, Completed
+          type: string
+        Actions:
+          type: string
+
+    jsonApiMeta:
+      description: >-
+        Non-standard meta-information that can not be represented as an
+        attribute or relationship.
+      type: object
+      additionalProperties: true
+      properties:
+        count:
+          type: number
+          readOnly: true
+
+    jsonApiResource:
+      description: Resource objects appear in a JSON API document to represent resources.
+      type: object
+      required:
+        - type
+        - id
+      properties:
+        type:
+          type: string
+        id:
+          type: string
+        attributes:
+          $ref: "#/components/schemas/jsonApiAttributes"
+        links:
+          $ref: '#/components/schemas/jsonApiResourceLinks'
+      additionalProperties: false
+
+    jsonApiPostResource:
+      description: A POSTable resource object has an optional id.
+      type: object
+      required:
+        - type
+      properties:
+        type:
+          type: string
+        id:
+          type: string
+        attributes:
+          $ref: "#/components/schemas/jsonApiAttributes"
+        links:
+          $ref: '#/components/schemas/jsonApiResourceLinks'
+      additionalProperties: false
+
+    jsonApiResourceLinks:
+      type: object
+      properties:
+        self:
+          $ref: '#/components/schemas/jsonApiLink'
+
+    jsonApiLink:
+      description: >-
+        A link **MUST** be represented as either: a string containing the link's
+        URL or a link object.
+      oneOf:
+        - description: A string containing the link's URL.
+          type: string
+          format: uri-reference
+        - type: object
+          required:
+            - href
+          properties:
+            href:
+              description: A string containing the link's URL.
+              type: string
+              format: uri-reference
+        - $ref: "#/components/schemas/nullType"
+
+    jsonApiAttributes:
+      description: >-
+        Members of the attributes object (`attributes`) represent information
+        about the resource object in which it's defined.
+      type: object
+      additionalProperties: false
+
+    jsonApiPagination:
+      type: object
+      properties:
+        self:
+          $ref: "#/components/schemas/jsonApiLink"
+        first:
+          $ref: "#/components/schemas/jsonApiLink"
+        last:
+          $ref: "#/components/schemas/jsonApiLink"
+        prev:
+          $ref: "#/components/schemas/jsonApiLink"
+        next:
+          $ref: "#/components/schemas/jsonApiLink"
+
+    jsonApi:
+      description: An object describing the server's implementation
+      type: object
+      properties:
+        version:
+          type: string
+        meta:
+          $ref: "#/components/schemas/jsonApiMeta"
+      additionalProperties: false
+
+    nullType:
+      description: OAS doesn't allow the null type so use this.
+      type: object
+      nullable: true
+      default: null
+
+    error:
+      type: object
+      properties:
+        statusCode:
+          type: string
+        message:
+          type: string
