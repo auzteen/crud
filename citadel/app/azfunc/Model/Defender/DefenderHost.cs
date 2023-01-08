@@ -47,6 +47,8 @@ namespace Citadel.Model.Defender
         public string OS { get; set; }
         [JsonProperty("comment")]
         public string Comment { get; set; }
+        [JsonPropertyName("SourceId")]
+        public string SourceId { get; set; }
         [JsonProperty("asset_criticality")]
         public DefenderCriticality AssetCriticality { get; set; }
     }
