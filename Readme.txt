@@ -1,15 +1,15 @@
 Tartarus - Get Defender Vulnerabilities
 ########################################
-1. Get Defender Vulnerability and Defender machine assets
+1. Get Defender Vulnerability and Defender machine assets ( GET https://api.securitycenter.microsoft.com/api/machines )
 2. Map Defender machine id (SourceId) and AssetName to Defender Vulnerability machineId JSON model: SourceId
 
 Note: Vulnerability.machineId = Asset.id (SourceId)
-
 
 Data Model
 ############
 -- Similar to Citadel DefenderAssests...
 
+https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/get-all-vulnerabilities-by-machines?view=o365-worldwide
 
 #########################################################################################
 # JSON SPEC. #
@@ -40,3 +40,5 @@ Data Model
 
 ########################################################################################
 
+(2.) Get Device Score Data ; Score: 451
+https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/get-device-secure-score?view=o365-worldwide
