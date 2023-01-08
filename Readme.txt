@@ -1,8 +1,7 @@
-- work on Tartarus/app/azfunc
+- work on Tartarus/app/azfunc 
 + DefenderScore.cs
 + VulnerabilityDiscovery.cs
-
-
+- use keyvault connection for service principal credentials
 
 Tartarus - Get Defender Vulnerabilities
 ########################################
