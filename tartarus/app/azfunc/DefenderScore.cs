@@ -21,17 +21,22 @@ namespace Tarta
         private static string GET_URL = "https://api-eu.securitycenter.microsoft.com/api/configurationScore"; // Change these uri for GET
         private static string GET_DEFENDER_SCORE_URI = "https://api.securitycenter.microsoft.com/api/configurationScore";
         private static string POST_URL = "https://dummyjson.com/products/add";
+        private readonly IVulnerabilityService _vulnerabilityService;
+        public DeviceScore(IVulnerabilityService vulnerabilityService)
+        {
+            _vulnerabilityService=vulnerabilityService;
+        }
         [FunctionName("DeviceScore")]
         public async Task Run(
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "v1/scores/get-score")]
-        HttpRequest req, ILogger logger, IVulnerabilityService vulnerabilityService)
+        HttpRequest req, ILogger logger)
         {
 
             try
             {
                 #region Defender Score Get Request
                 var request = new HttpRequestMessage(HttpMethod.Get, GET_DEFENDER_SCORE_URI);
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", vulnerabilityService.GetToken());
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _vulnerabilityService.GetToken());
                 var response = httpClient.SendAsync(request).GetAwaiter().GetResult();
                 var result = response.Content.ReadAsStringAsync();
                 var responseData = JsonConvert.DeserializeObject<ScoreData>(result.Result);
