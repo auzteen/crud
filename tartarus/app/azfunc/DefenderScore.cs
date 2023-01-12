@@ -1,5 +1,6 @@
 
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
@@ -27,7 +28,7 @@ namespace Tarta
             _vulnerabilityService=vulnerabilityService;
         }
         [FunctionName("DeviceScore")]
-        public async Task Run(
+        public async Task<OkObjectResult> Run(
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "v1/scores/get-score")]
         HttpRequest req, ILogger logger)
         {
@@ -56,7 +57,7 @@ namespace Tarta
                     var respMessage = await httpClient.PostAsync(POST_URL, httpContent);
                     var postResp = await respMessage.Content.ReadAsStringAsync();
                     logger.LogInformation($"Post function executed at: {DateTime.Now}{postResp}");
-                    //return new OkObjectResult(postResp);
+                    return new OkObjectResult(postResp);
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                 {
