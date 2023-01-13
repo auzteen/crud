@@ -69,22 +69,22 @@ namespace Tarta
             catch (BadRequestException e)
             {
                 logger.LogError(e.Message);
-                //return Common.ReturnErrorResponse(e.Message, "400");
+                return new OkObjectResult(Common.ReturnErrorResponse(e.Message, "400"));
             }
             catch (KeyNotFoundException e)
             {
                 logger.LogError(e.Message);
-                //return Common.ReturnErrorResponse(e.Message, "400");
+                return new OkObjectResult(Common.ReturnErrorResponse(e.Message, "400"));
             }
             catch (Newtonsoft.Json.JsonException e)
             {
                 logger.LogError(e.Message);
-                //return Common.ReturnErrorResponse("Invalid JSON request", "400");
+                return new OkObjectResult(Common.ReturnErrorResponse("Invalid JSON request", "400"));
             }
             catch (Exception e)
             {
                 logger.LogError(e.Message);
-                //return Common.ReturnErrorResponse(e.Message, "500");
+                return new OkObjectResult(Common.ReturnErrorResponse(e.Message, "500"));
             }
         }
 
