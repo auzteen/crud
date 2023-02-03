@@ -1,0 +1,14 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "DefaultEndpointsProtocol=https;AccountName=holdcsv;AccountKey=syVsYahQl2sfJQzisrOj0taO+vBpm4I4NWx3puxQUg7PvLhnkc37PQTeE5e2opqTeVKes2Tpkx7Z+AStnpa+3w==;EndpointSuffix=core.windows.net",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+    "ContainerName": "bucket",
+    "CONNECTION_STRING": "Server=tcp:sql-db.database.windows.net,1433;Initial Catalog=sqldb-cita-sbx-cac-02;Persist Security Info=False;User ID=admin;Password=admin;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
+    "tenantId": "XXXXX",
+    "appId": "XXXXXX",
+    "appSecret": "XXXXX",
+    "CERTIFICATE_ISSUER": "XXXX",
+    "CERTIFICATE_AUDIENCE": "XXXX"
+  }
+}
